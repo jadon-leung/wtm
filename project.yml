@@ -1,0 +1,84 @@
+name: WTM
+
+options:
+  bundleIdPrefix: com.wtm
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+
+configs:
+  Debug: debug
+  Release: release
+
+configFiles:
+  Debug: Config/Debug.xcconfig
+  Release: Config/Release.xcconfig
+
+packages:
+  WTMCore:
+    path: Packages/WTMCore
+  Onboarding:
+    path: Packages/Onboarding
+  Preferences:
+    path: Packages/Preferences
+  Home:
+    path: Packages/Home
+  Groups:
+    path: Packages/Groups
+  ItineraryPlanner:
+    path: Packages/ItineraryPlanner
+  Profile:
+    path: Packages/Profile
+
+targets:
+  WTM:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: App/Sources
+    resources:
+      - path: App/Resources
+    info:
+      path: Generated/Info.plist
+      properties:
+        CFBundleDisplayName: WTM
+        SUPABASE_URL: $(SUPABASE_URL)
+        SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        ITSAppUsesNonExemptEncryption: false
+    entitlements:
+      path: Generated/WTM.entitlements
+      properties:
+        com.apple.developer.applesignin:
+          - Default
+    settings:
+      base:
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: complete
+        PRODUCT_BUNDLE_IDENTIFIER: com.wtm.app
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
+        ENABLE_PREVIEWS: YES
+        DEVELOPMENT_ASSET_PATHS: "\"App/Resources/Preview Content\""
+    dependencies:
+      - package: WTMCore
+      - package: Onboarding
+      - package: Preferences
+      - package: Home
+      - package: Groups
+      - package: ItineraryPlanner
+      - package: Profile
+
+schemes:
+  WTM:
+    build:
+      targets:
+        WTM: all
+    run:
+      config: Debug
