@@ -17,6 +17,7 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             HomeTab(
                 currentUser: currentUser,
+                selectedTab: selectedTab,
                 onSeeAllGroups: { selectedTab = 1 },
                 onOpenProfile: { selectedTab = 3 }
             )
@@ -51,22 +52,22 @@ struct MainTabView: View {
 private enum HomeRoute: Hashable {
     case detail(WTMGroup)
     case itinerary(WTMGroup)
-    case planner(WTMGroup)
+    case planner(String)
 }
 
 private struct HomeTab: View {
     let currentUser: WTMUser
+    let selectedTab: Int
     let onSeeAllGroups: () -> Void
     let onOpenProfile: () -> Void
 
-    @Environment(\.services) private var services
     @State private var path: [HomeRoute] = []
 
     var body: some View {
         NavigationStack(path: $path) {
             HomeView(
                 currentUser: currentUser,
-                onPlanADay: startNewPlan,
+                onPlanADay: { path.append(.planner(autoPlanName())) },
                 onSelectGroup: { group in path.append(.detail(group)) },
                 onOpenPlan: { group in path.append(.itinerary(group)) },
                 onSeeAllGroups: onSeeAllGroups,
@@ -82,22 +83,9 @@ private struct HomeTab: View {
                     )
                 case .itinerary(let group):
                     ItineraryView(group: group)
-                case .planner(let group):
-                    DayPlannerView(group: group)
+                case .planner(let planName):
+                    DayPlannerView(planName: planName, activeTab: selectedTab)
                 }
-            }
-        }
-        #if DEBUG
-        .task {
-            if ProcessInfo.processInfo.arguments.contains("--wtm-preview-planner") { startNewPlan() }
-        }
-        #endif
-    }
-
-    private func startNewPlan() {
-        Task {
-            if let group = try? await services.groups.createGroup(name: autoPlanName()) {
-                path.append(.planner(group))
             }
         }
     }

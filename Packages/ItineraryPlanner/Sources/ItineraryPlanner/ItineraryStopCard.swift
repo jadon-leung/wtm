@@ -88,7 +88,7 @@ struct ItineraryStopCard: View {
     }
 }
 
-struct TicketActionButtonStyle: ButtonStyle {
+private struct TicketActionButtonStyle: ButtonStyle {
     let tint: Color
 
     func makeBody(configuration: Configuration) -> some View {

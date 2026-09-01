@@ -9,9 +9,4 @@ public protocol ItineraryServicing: Sendable {
     func generateItinerary(for groupID: UUID) async throws -> Itinerary
     func swapStop(_ stopID: UUID, in itinerary: Itinerary, forAlternate alternate: VenueAlternate) async throws -> ItineraryStop
     func submitFeedback(stopID: UUID, action: FeedbackAction) async throws
-
-    /// Inserts a stop at `index` in the itinerary's ordering, pushing any
-    /// later stops' times forward just enough to avoid overlapping it.
-    func insertStop(_ venue: Venue, into itinerary: Itinerary, at index: Int, startTime: Date, endTime: Date) async throws -> Itinerary
-    func removeStop(_ stopID: UUID, from itinerary: Itinerary) async throws -> Itinerary
 }
